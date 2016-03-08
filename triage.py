@@ -187,7 +187,7 @@ class Triage:
 
     def debug(self, msg=""):
         if self.verbose:
-            print msg
+            print "Debug: " + msg
 
     def get_module_maintainers(self):
         module_maintainers = []
