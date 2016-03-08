@@ -238,19 +238,19 @@ class Triage:
             self.debug(msg="needs revision labeled, skipping maintainer")
             return
 
+        if self.pull_request.get_pr_submitter() in module_maintainers:
+            self.debug(msg="plugin by owner, shipit as owner_pr")
+            self.pull_request.add_desired_label(name="owner_pr")
+            self.pull_request.add_desired_label(name="shipit_owner_pr")
+            return
+
         if "shipit" in self.pull_request.get_current_labels():
             self.debug(msg="shipit labeled, skipping maintainer")
             return
 
         if not module_maintainers and pr_contains_new_file:
-            self.debug(msg="...but has no module maintainer yet")
+            self.debug(msg="New plugin, no module maintainer yet")
             self.pull_request.add_desired_label(name="community_review_new")
-
-        elif self.pull_request.get_pr_submitter() in module_maintainers:
-            self.debug(msg="plugin by owner, shipit as owner_pr")
-            self.pull_request.add_desired_label(name="owner_pr")
-            self.pull_request.add_desired_label(name="shipit_owner_pr")
-
         else:
             self.debug(msg="existing plugin modified, module maintainer should review")
             self.pull_request.add_desired_label(name="community_review_existing")
