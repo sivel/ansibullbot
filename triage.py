@@ -118,7 +118,7 @@ class PullRequest:
 
 
     def is_mergeable(self):
-        return self._pr.mergeable
+        return self._pr.mergeable_state != "dirty"
 
 
     def get_base_ref(self):
