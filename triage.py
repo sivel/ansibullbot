@@ -4,7 +4,7 @@ import json
 import sys
 import argparse
 import time
-from datetime import datetime, date, time
+from datetime import datetime, date
 
 
 from github import Github
