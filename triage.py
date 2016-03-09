@@ -85,7 +85,7 @@ class PullRequest:
         self.current_pr_labels = []
         self.desired_pr_labels = []
 
-        # we have a few labels we don't touch unless forced'
+        # we have a few labels we don't touch unless forced
         self.unlabeling_forced = False
 
         self.current_comments = []
@@ -341,6 +341,7 @@ class Triage:
 
 
     def resolv_desired_pr_labels(self, desired_pr_label):
+        """ Resolves boilerplate the key labels to labels using an alias dict"""
         for resolved_desired_pr_label, aliases in ALIAS_LABELS.iteritems():
             if desired_pr_label in aliases:
                 return resolved_desired_pr_label
@@ -382,17 +383,23 @@ class Triage:
                 if desired_pr_label not in self.pull_request.get_current_labels():
                     self.actions['newlabel'].append(desired_pr_label)
 
+        # unlabel action
         for current_pr_label in self.pull_request.get_current_labels():
+
+            # some labels we just ignore
             if current_pr_label in IGNORE_LABELS:
                 continue;
 
+            # some of them we ignore unless forced
             if not self.pull_request.unlabeling_forced \
               and current_pr_label in SKIP_UNLABELING_FOR_LABELS:
                 continue;
 
+            # now check if we need to unlabel
             if current_pr_label not in resolved_desired_pr_labels:
                 self.actions['unlabel'].append(current_pr_label)
 
+        # any manual desired comments we also take
         self.actions['comments'].extend(self.pull_request.desired_comments)
 
 
