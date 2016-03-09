@@ -348,15 +348,35 @@ class Triage:
 
 
     def create_actions(self):
+        """ Creates label unlabel and comment actions"""
+
+        # create new label and comments action
         resolved_desired_pr_labels = []
         for desired_pr_label in self.pull_request.desired_pr_labels:
+
+            # Most of the comments are only going to be added if we also add a new label.
+            # So they are coupled. That is why we use the boilerplate dict key as label
+            # and use an alias table containing the real labels.
+            # This allows us to either use a real new label without a comment or an label coupled with a comment.
+            # We check if the label is a boilerplate dict key and get the real label back
+            # or alternatively the label we gave as input
+            # e.g. label: community_review_existing -> community_review
+            # e.g. label: community_review -> community_review
             resolved_desired_pr_label = self.resolv_desired_pr_labels(desired_pr_label)
+
+            # If we didn't get back the same, it means we must also add a comment for this label
             if desired_pr_label != resolved_desired_pr_label:
+
+                # we cache for later use in unlabeling actions
                 resolved_desired_pr_labels.append(resolved_desired_pr_label)
+
+                # We only add actions (newlabel, comments) if the label is not already set
                 if resolved_desired_pr_label not in self.pull_request.get_current_labels():
-                    # the desired_label was an alias aka a key of a boilerplate
+                    # Use the previous label as key for the boilerplate dict
                     self.actions['comments'].append(desired_pr_label)
                     self.actions['newlabel'].append(resolved_desired_pr_label)
+
+            # it is a real label, no comment needs to be added
             else:
                 resolved_desired_pr_labels.append(desired_pr_label)
                 if desired_pr_label not in self.pull_request.get_current_labels():
