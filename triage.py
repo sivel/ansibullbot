@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import print_function
 
 import json
 import sys
@@ -187,7 +188,7 @@ class Triage:
 
     def debug(self, msg=""):
         if self.verbose:
-            print "Debug: " + msg
+            print("Debug: " + msg)
 
     def get_module_maintainers(self):
         module_maintainers = []
@@ -409,9 +410,9 @@ class Triage:
         self.init_actions()
 
         # print some general infos about the PR to be processed
-        print "\nPR #%s: %s" % (self.pull_request.pr_number, self.pull_request._pr.title)
-        print "Created at %s" % self.pull_request._pr.created_at
-        print "Updated at %s" % self.pull_request._pr.updated_at
+        print("\nPR #%s: %s" % (self.pull_request.pr_number, self.pull_request._pr.title))
+        print("Created at %s" % self.pull_request._pr.created_at)
+        print("Updated at %s" % self.pull_request._pr.updated_at)
 
         # add desired labels
         if self.pull_request.is_mergeable():
@@ -428,17 +429,10 @@ class Triage:
         self.create_actions()
 
         # Print the things we processed
-        print "Submitter: %s" % self.pull_request.get_pr_submitter()
-        print "Maintainers: %s" % ', '.join(self.get_module_maintainers())
-        print "Current Labels: %s" % ', '.join(self.pull_request.current_pr_labels)
-        print "Actions: %s" % self.actions
-
-#        # Let human do some work
-#        if self.pull_request.is_labeled_for_interaction():
-#            print "WARNING: PR labeled for human interaction."
-#            cont = raw_input("Take human interaction (y/N/a)? ")
-#            if cont in ('a','A','y','Y'):
-#               sys.exit(0)
+        print("Submitter: %s" % self.pull_request.get_pr_submitter())
+        print("Maintainers: %s" % ', '.join(self.get_module_maintainers()))
+        print("Current Labels: %s" % ', '.join(self.pull_request.current_pr_labels))
+        print("Actions: %s" % self.actions)
 
         if self.actions['newlabel'] or self.actions['unlabel'] or self.actions['comments']:
             cont = raw_input("Take recommended actions (y/N/a)? ")
@@ -447,12 +441,12 @@ class Triage:
             if cont in ('Y','y'):
                 self.handle_action()
         elif self.always_pause:
-            print "Skipping, but pause."
+            print("Skipping, but pause.")
             cont = raw_input("Continue (Y/n/a)? ")
             if cont in ('a','A','n','N'):
                 sys.exit(0)
         else:
-            print "Skipping."
+            print("Skipping.")
 
 
     def handle_action(self):
@@ -487,7 +481,7 @@ def main():
     args = parser.parse_args()
 
     if args.pr and args.start_at:
-        print "Error: Mutually exclusive: --start-at and --pr"
+        print("Error: Mutually exclusive: --start-at and --pr", file=sys.stderr)
         sys.exit(1)
 
     triage = Triage(
